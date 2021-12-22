@@ -1,0 +1,98 @@
+{% extends "manager/layout.html" %}
+{% load static %}
+
+{% block body %}
+{% if user.is_authenticated %}
+<div class="container">
+    <div class="col-lg-12">
+        <div class="row justify-content-between row-fa">
+            <form class="form-inline" action="{% url 'index' %}" method="post">
+                {% csrf_token %}
+                <i class="fas fa-search mr-1"></i>
+                <input class="form-control mr-sm-2" type="search" name="sitesearch" placeholder="Search Passwords">
+            </form>
+            <i class="fas fa-plus fa-3x add-new" id="addNewButton"></i>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <div class="row">
+            <table class="table table-responsive-md" id="passTable">
+                <thead>
+                    <tr>
+                        <th style="width: 25%" scope="col">Site</th>
+                        <th style="width: 30%" scope="col">Username</th>
+                        <th style="width: 30%" scope="col">Password</th>
+                        <th style="width: 15%" scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for password in page_obj %}
+                    <tr>
+                        <td>{{password.domain}}</td>
+                        <td>{{password.domain_username}}</td>
+                        <td><input type="password" class="saved-pwd" disabled id="{{password.id}}" value="        ">
+                        </td>
+                        <td>
+                            <i class="far edit-buttons fa-eye fa-eye-slash mr-3" data-passid="{{password.id}}"></i>
+                            <i class="far edit-buttons fa-copy mr-3" data-passid="{{password.id}}"></i>
+                            <i class="far edit-buttons fa-trash-alt" data-passid="{{password.id}}"></i>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <nav>
+                <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+                    <li class="page-item"><a class="page-link"
+                            href="?page={{page_obj.previous_page_number}}">previous</a></li>
+                    {% endif %}
+
+                    {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{page_obj.next_page_number}}">next</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{page_obj.paginator.num_pages}}">last
+                            &raquo;</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+<div class="new-pass-container" id="newPassForm">
+    <div class="new-pass-form rounded pt-3">
+        <h4>Add Password</h4>
+        <form>
+            {% csrf_token %}
+            <div class="form-group mt-3">
+                <input class="form-control" autofocus type="text" name="site" autocomplete="off" placeholder="Site">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="text" name="username" autocomplete="off" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="password" placeholder="Password">
+            </div>
+            <div class="form-group">
+                <input class="form-control" type="password" name="passphrase" placeholder="Master Passphrase">
+            </div>
+            <div class="row ml-auto mt-1">
+                <div class="column">
+                    <button class="btn btn-primary mb-4 mr-1" type="button" id="addPassButton">Add</button>
+                    <button class="btn btn-danger mb-4" type="button" id="cancelAdd">Cancel</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endif %}
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'manager/addNewPassword.js' %}"></script>
+<script src="{% static 'manager/savedPasswordsInteraction.js' %}"></script>
+{% endblock %}

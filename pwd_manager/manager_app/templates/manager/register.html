@@ -1,0 +1,74 @@
+{% extends 'manager/layout.html' %}
+{% load static %}
+
+{% block body %} 
+    <div class="container register-container" id="registration">
+        <div class="row">
+            <div class="col-3">
+                
+            </div>
+            <div class="col-6">
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <h3>Register</h3>
+                    </div>
+                </div>
+                {% if message %}
+                <div class="form-row error-message">
+                    <div class="form-group col-12">
+                        <h6>{{ message }}</h6>
+                    </div>
+                </div>
+                {% endif %}
+                <form action="{% url 'register' %}" method="post" id="registerForm">
+                        {% csrf_token %}
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <input class="form-control" autofocus type="text" name="username" autocomplete="off" placeholder="Username">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <input class="form-control" type="email" name="email" placeholder="Email Address">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <input class="form-control" type="password" name="password" placeholder="Password">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <input class="form-control" type="password" name="passphrase" placeholder="Passphrase">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-12">
+                                <input class="form-control" type="password" name="passphraseconfirm" placeholder="Confirm Passphrase">
+                            </div>
+                        </div>
+                        <input class="btn btn-primary mb-4" type="submit" id="registerButton" value="Register">
+                </form>
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        Already have an account?&nbsp<a href="{% url 'login' %}">Log In Here.</a>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-3">
+
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block script %}
+<script src="{% static 'manager/validateRegistration.js' %}"></script>
+{% endblock %}

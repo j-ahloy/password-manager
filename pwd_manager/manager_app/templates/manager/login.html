@@ -1,0 +1,47 @@
+{% extends "manager/layout.html" %}
+
+{% block body %}
+<div class="container register-container">
+    <div class="row">
+        <div class="col-3">
+        </div>
+        <div class="col-6">
+            <div class="form-row">
+                <div class="form-group col-12">
+                    <h3> Login </h3>
+                </div>
+            </div>
+            {% if message %}
+            <div class="form-row">
+                <div class="form-group col-12 error-message">
+                    <h6> {{ message }} </h6>
+                </div>
+            </div>
+            {% endif %}
+            <form action="{% url 'login' %}" method="post">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <input autofocus class="form-control" type="text" name="username" placeholder="Username"
+                            autocomplete="off">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-12">
+                        <input class="form-control" type="password" name="password" placeholder="Password">
+                    </div>
+                </div>
+                <input class="btn btn-primary mb-4" type="submit" value="Login">
+            </form>
+
+            <div class="form-row">
+                <div class="form-group col-12">
+                    Don't have an account?&nbsp<a href="{% url 'register' %}"> Register here.</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-3">
+        </div>
+    </div>
+</div>
+{% endblock %}
