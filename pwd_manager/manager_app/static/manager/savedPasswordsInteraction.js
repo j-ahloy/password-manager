@@ -55,76 +55,18 @@ document.addEventListener('DOMContentLoaded', function () {
                                             popup: ''
                                         }
                                     })
-                                        .then(() => { passphrase = ''; })
+                                        .then(() => { passphrase = '' })
                                 } else {
                                     setTimeout(() => { passphrase = '' }, 30000) // Store the passphrase for a set amount of time
                                     if (buttonClasses.contains('fa-eye')) {
                                         // Show password
-                                        if (buttonClasses.contains('fa-eye-slash')) {
-                                            const showPassword = async () => {
-                                                const pwd = await getStoredPass(passphrase, passID, csrftoken)
-                                                pass_div = document.querySelector(`[id="${passID}"]`);
-                                                pass_div.type = 'text';
-                                                pass_div.value = pwd;
-                                            };
-                                            showPassword();
-                                            buttonClasses.remove('fa-eye-slash');
-                                        } else {
-                                            pass_div = document.querySelector(`[id="${passID}"]`);
-                                            pass_div.type = 'password';
-                                            pass_div.value = ' '.repeat(8);
-                                            buttonClasses.add('fa-eye-slash');
-                                        }
+                                        showPassword(passphrase, passID, buttonClasses, csrftoken)
                                     } else if (buttonClasses.contains('fa-copy')) {
                                         // Copy password
-                                        const copyPassword = async () => {
-                                            const pwd = await getStoredPass(passphrase, passID, csrftoken);
-                                            navigator.clipboard.writeText(pwd)
-                                        };
-                                        copyPassword();
+                                        copyPassword(passphrase, passID, csrftoken);
                                     } else {
                                         // Delete password
-                                        Swal.fire({
-                                            title: "Are you sure?",
-                                            text: "This can't be undone.",
-                                            icon: 'warning',
-                                            showCancelButton: true,
-                                            confirmButtonColor: '#3085d6',
-                                            cancelButtonColor: '#d33',
-                                            confirmButtonText: "Yes, delete it.",
-                                            showClass: {
-                                                backdrop: 'swal2-noanimation',
-                                                popup: '',
-
-                                            },
-                                            hideClass: {
-                                                popup: ''
-                                            }
-                                        }).then((result => {
-                                            if (result.isConfirmed) {
-                                                Swal.fire({
-                                                    icon: 'success',
-                                                    title: "Deleted.",
-                                                    text: "Your password has been deleted.",
-                                                    showClass: {
-                                                        backdrop: 'swal2-noanimation',
-                                                        popup: '',
-
-                                                    },
-                                                    hideClass: {
-                                                        popup: ''
-                                                    }
-                                                })
-                                                    .then(fetch('../deletepass', {
-                                                        method: 'POST',
-                                                        body: JSON.stringify({
-                                                            id: passID
-                                                        }),
-                                                        headers: { 'X-CSRFToken': csrftoken }
-                                                    }))
-                                                    .then(() => location.href = '')
-                                            }
-                                        }))
+                                        deletePassword(passID, csrftoken)
                                     }
                                 }
                             })
@@ -133,81 +75,16 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 if (buttonClasses.contains('fa-eye')) {
                     // Show password
-                    if (buttonClasses.contains('fa-eye-slash')) {
-                        const showPassword = async () => {
-                            const pwd = await getStoredPass(passphrase, passID, csrftoken)
-                            pass_div = document.querySelector(`[id="${passID}"]`);
-                            pass_div.type = 'text';
-                            pass_div.value = pwd;
-                        };
-                        showPassword();
-                        buttonClasses.remove('fa-eye-slash');
-                    } else {
-                        pass_div = document.querySelector(`[id="${passID}"]`);
-                        pass_div.type = 'password';
-                        pass_div.value = ' '.repeat(8);
-                        buttonClasses.add('fa-eye-slash');
-                    }
+                    showPassword(passphrase, passID, buttonClasses, csrftoken)
                 } else if (buttonClasses.contains('fa-copy')) {
                     // Copy password
-                    const copyPassword = async () => {
-                        const pwd = await getStoredPass(passphrase, passID, csrftoken);
-                        navigator.clipboard.writeText(pwd)
-                    };
-                    copyPassword();
+                    copyPassword(passphrase, passID, csrftoken);
                 } else {
                     // Delete password
-                    Swal.fire({
-                        title: "Are you sure?",
-                        text: "This can't be undone.",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: "Yes, delete it.",
-                        showClass: {
-                            backdrop: 'swal2-noanimation',
-                            popup: '',
-
-                        },
-                        hideClass: {
-                            popup: ''
-                        }
-                    }).then((result => {
-                        if (result.isConfirmed) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: "Deleted.",
-                                text: "Your password has been deleted.",
-                                showClass: {
-                                    backdrop: 'swal2-noanimation',
-                                    popup: '',
-
-                                },
-                                hideClass: {
-                                    popup: ''
-                                }
-                            })
-                                .then(fetch('../deletepass', {
-                                    method: 'POST',
-                                    body: JSON.stringify({
-                                        id: passID
-                                    }),
-                                    headers: { 'X-CSRFToken': csrftoken }
-                                }))
-                                .then(() => location.href = '')
-                        }
-                    }))
+                    deletePassword(passID, csrftoken);
                 }
             }
-
         }
-
-
-
-
-
-
     })
 
 
@@ -228,6 +105,76 @@ async function getStoredPass(passphrase, id, csrftoken) {
         .then(data => data.password)
 
     return pwd
+}
+
+
+// Function for displaying password after correct passphrase is provided
+async function showPassword(passphrase, id, buttonClasses, csrftoken) {
+    if (buttonClasses.contains('fa-eye-slash')) {
+        const pwd = await getStoredPass(passphrase, id, csrftoken)
+        pass_div = document.querySelector(`[id="${id}"]`);
+        pass_div.type = 'text';
+        pass_div.value = pwd;
+        buttonClasses.remove('fa-eye-slash');
+    } else {
+        pass_div = document.querySelector(`[id="${id}"]`);
+        pass_div.type = 'password';
+        pass_div.value = ' '.repeat(8);
+        buttonClasses.add('fa-eye-slash');
+    }
+}
+
+
+// Function for copying password
+async function copyPassword(passphrase, id, csrftoken) {
+    const pwd = await getStoredPass(passphrase, id, csrftoken);
+    navigator.clipboard.writeText(pwd)
+}
+
+
+// Function for deleting password
+function deletePassword(id, csrftoken) {
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This can't be undone.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: "Yes, delete it.",
+        showClass: {
+            backdrop: 'swal2-noanimation',
+            popup: '',
+
+        },
+        hideClass: {
+            popup: ''
+        }
+    }).then((result => {
+        if (result.isConfirmed) {
+            Swal.fire({
+                icon: 'success',
+                title: "Deleted.",
+                text: "Your password has been deleted.",
+                showClass: {
+                    backdrop: 'swal2-noanimation',
+                    popup: '',
+
+                },
+                hideClass: {
+                    popup: ''
+                }
+            })
+                .then(fetch('../deletepass', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        id: id
+                    }),
+                    headers: { 'X-CSRFToken': csrftoken }
+                }))
+                .then(() => location.href = '')
+        }
+    }))
 }
 
 
