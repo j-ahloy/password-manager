@@ -18,8 +18,14 @@ Install requirements:
  
 ## Usage
 
-Once the virtual environment is active, enter
+Once the virtual environment is active, enter the following at the command line to run the application locally.
     
     python3 manage.py runserver
 
-to run the application locally. 
+
+## Features
+
+The application has the features one might expect of a standard password manager: the ability to store passwords, view them, copy them to the clipboard, and delete them. Passwords are hidden by default and can be un-hidden if you'd like to see them. You don't need to un-hide a password to copy it to the clipboard.
+
+During account-creation, you'll be asked to choose a passphrase. The passphrase is necessary for encrypting and decrypting passwords. There's no way to recover a passphrase, so if it's lost, all stored passwords are inaccessible. 
+
