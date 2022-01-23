@@ -5,5 +5,5 @@ This is a simple password manager built as a final project for CS50's Web Progra
 ## Set-up
 
 Create a virtual environment and activate it: 
-        python3 -m venv env
-        source env/bin/activate
+    python3 -m venv env
+    source env/bin/activate
